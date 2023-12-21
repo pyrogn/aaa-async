@@ -30,3 +30,11 @@ async def coroutines_execution_order(i: int = 42) -> int:
     await task_1(i)
 
     # YOUR CODE GOES HERE
+    print(task_1(i))
+
+
+if __name__ == "__main__":
+    import asyncio
+
+    res = asyncio.run(coroutines_execution_order(7))
+    print(res)

@@ -21,9 +21,22 @@ async def coroutines_execution_order(coros: list[Awaitable[Ticket]]) -> str:
     #
     # Результат: 'мамамылараму'
     #
-    tasks = asyncio.gather(*coros)
-    res = asyncio.run(tasks)
-    res = sorted(res, key=lambda x: x.number)
-    string = "".join(*res)
-    print(string)
-    return string
+
+    res = await asyncio.gather(*coros)
+    keys = [ticket.key for ticket in sorted(res, key=lambda x: x.number)]
+    return "".join(keys)
+
+
+if __name__ == "__main__":
+
+    async def just_return_ticket(t: Ticket) -> Ticket:
+        return t
+
+    tickets = [
+        Ticket(number=2, key="мыла"),
+        Ticket(number=1, key="мама"),
+        Ticket(number=3, key="раму"),
+    ]
+    coros = [just_return_ticket(t) for t in tickets]
+    res = asyncio.run(coroutines_execution_order(coros))
+    print(res)
