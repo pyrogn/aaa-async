@@ -20,6 +20,7 @@ class BackgroundCoroutinesWatcher:
         # YOUR CODE GOES HERE
 
         task = asyncio.create_task(coro)
+        # удаляем через call me back 🎶
         task.add_done_callback(self._remove_from_running_task)
         self._running_tasks.add(task)
 

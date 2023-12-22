@@ -17,17 +17,16 @@ async def coroutines_execution_order(coros: list[Awaitable[Ticket]]) -> str:
     # r1 = Ticket(number=2, key='мыла')
     # r2 = Ticket(number=1, key='мама')
     # r3 = Ticket(number=3, key='раму')
-
     #
     # Результат: 'мамамылараму'
     #
 
-    res = await asyncio.gather(*coros)
-    keys = [ticket.key for ticket in sorted(res, key=lambda x: x.number)]
+    tickets = await asyncio.gather(*coros)  # получаем результат от всех корутин
+    keys = [ticket.key for ticket in sorted(tickets, key=lambda x: x.number)]
     return "".join(keys)
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # для самотестирования
 
     async def just_return_ticket(t: Ticket) -> Ticket:
         return t
