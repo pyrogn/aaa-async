@@ -1,21 +1,21 @@
 async def task_1(i: int):
     if i == 0:
-        return "1"
+        return
 
     if i > 5:
-        return "1" + await task_2(i // 2)
+        await task_2(i // 2)
     else:
-        return "1" + await task_2(i - 1)
+        await task_2(i - 1)
 
 
 async def task_2(i: int):
     if i == 0:
-        return "2"
+        return
 
     if i % 2 == 0:
-        return "2" + await task_1(i // 2)
+        await task_1(i // 2)
     else:
-        return "2" + await task_2(i - 1)
+        await task_2(i - 1)
 
 
 async def coroutines_execution_order(i: int = 42) -> int:
@@ -28,8 +28,25 @@ async def coroutines_execution_order(i: int = 42) -> int:
     # i = 7
     # return 12212
 
-    # but I guess it should be done without changing coroutines. Right?
-    return int(await task_1(i))
+    res = []
+
+    def value(val):
+        def foo(f):
+            async def wrapper(*args, **kwargs):
+                o = await f(*args, **kwargs)
+                res.append(val)
+                return o
+
+            return wrapper
+
+        return foo
+
+    global task_1, task_2
+    task_1 = value("1")(task_1)
+    task_2 = value("2")(task_2)
+    await task_1(i)
+
+    return int("".join(res)[::-1])
 
 
 if __name__ == "__main__":
