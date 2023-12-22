@@ -38,5 +38,6 @@ if __name__ == "__main__":
         Ticket(number=3, key="раму"),
     ]
     coros = [just_return_ticket(t) for t in tickets]
-    res = asyncio.run(coroutines_execution_order(coros))
+    # Coroutine is not Awaitable? Pylance isn't sure about it
+    res = asyncio.run(coroutines_execution_order(coros))  # type: ignore
     print(res)

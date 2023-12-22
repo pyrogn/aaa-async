@@ -10,7 +10,7 @@ async def await_my_func(f: Callable[..., Coroutine] | Task | Coroutine) -> Any:
         return await f()
     elif isinstance(f, Task):
         return await f
-    elif isinstance(f, Coroutine):
+    elif isinstance(f, Coroutine):  # what is coroutine?
         return await f
     else:
         raise ValueError("invalid argument")
