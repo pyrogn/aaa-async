@@ -19,6 +19,11 @@ class BackgroundCoroutinesWatcher:
         #
         # YOUR CODE GOES HERE
 
+        task = asyncio.create_task(coro)
+        # удаляем через call me back 🎶
+        task.add_done_callback(self._remove_from_running_task)
+        self._running_tasks.add(task)
+
     def _remove_from_running_task(self, task: asyncio.Task) -> None:
         self._running_tasks.remove(task)
 
@@ -26,10 +31,17 @@ class BackgroundCoroutinesWatcher:
         # Здесь необходимо реализовать отмену корутин, которые ещё не успели завершиться.
         #
         # YOUR CODE GOES HERE
+        for task in self._running_tasks:
+            if not task.done():
+                task.cancel()
 
 
 class FastHandlerWithLongBackgroundTask:
-    def __init__(self, long_task_creator: AbstractLongTaskCreator, bcw: BackgroundCoroutinesWatcher):
+    def __init__(
+        self,
+        long_task_creator: AbstractLongTaskCreator,
+        bcw: BackgroundCoroutinesWatcher,
+    ):
         self._long_task_creator = long_task_creator
         self._bcw = bcw
 
